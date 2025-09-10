@@ -52,37 +52,39 @@ cat(paste(data_date_9m$mcn, collapse = ","))
 
 write.csv(data_date_9m, "df_clean_copy.csv", row.names = FALSE)
 ###
-data_height <- read.csv("natural_language_query_download_2025_9_6-14-42-23.csv") 
+#data_height <- read.csv("natural_language_query_download_2025_9_6-14-42-23.csv") 
 
 data_date_9m$In.Bed.Time.Clean <- as.POSIXct(data_date_9m$In.Bed.Time, format = "%m/%d/%y")
 
-data_height$Assessment.Date.Clean <- sub("\\..*", "", data_height$Assessment.Date)  # removes .747512
-data_height$Assessment.Date.Clean <- as.POSIXct(data_height$Assessment.Date.Clean, format = "%Y-%m-%dT%H:%M:%S")
-data_height$Assessment.Date.Clean <- format(data_height$Assessment.Date.Clean, "%Y-%m-%d")
+#data_height$Assessment.Date.Clean <- sub("\\..*", "", data_height$Assessment.Date)  # removes .747512
+#data_height$Assessment.Date.Clean <- as.POSIXct(data_height$Assessment.Date.Clean, format = "%Y-%m-%dT%H:%M:%S")
+#data_height$Assessment.Date.Clean <- format(data_height$Assessment.Date.Clean, "%Y-%m-%d")
 
-names(data_height)[names(data_height) == "PAT_PATIENT_CLINIC_NUMBER"] <- "mcn"
+#names(data_height)[names(data_height) == "PAT_PATIENT_CLINIC_NUMBER"] <- "mcn"
 
 data_date_9m$In.Bed.Time.Clean <- as.Date(data_date_9m$In.Bed.Time.Clean)
-data_height$Assessment.Date.Clean <- as.Date(data_height$Assessment.Date.Clean)
+#data_height$Assessment.Date.Clean <- as.Date(data_height$Assessment.Date.Clean)
 
-check_df <- data_height %>%
-  left_join(data_date_9m, by = "mcn") %>%  # Join on ID within last 600 days
-  group_by(mcn) %>%
-  mutate(check_col = if_else(Assessment.Date.Clean >= (In.Bed.Time.Clean - 100000) & Assessment.Date.Clean <= In.Bed.Time.Clean, "yes", "no")) %>%
-  ungroup()
+#check_df <- data_height %>%
+#  left_join(data_date_9m, by = "mcn") %>%  # Join on ID within last 600 days
+#  group_by(mcn) %>%
+#  mutate(check_col = if_else(Assessment.Date.Clean >= (In.Bed.Time.Clean - 100000) & Assessment.Date.Clean <= In.Bed.Time.Clean, "yes", "no")) %>%
+#  ungroup()
 
-sum(check_df$check_col == "yes", na.rm = TRUE)
-length(unique(check_df$mcn))
+check_df <- data_date_9m
+#sum(check_df$check_col == "yes", na.rm = TRUE)
+#length(unique(check_df$mcn))
 
 #check_df <- check_df %>% filter(check_col != "no")
 
-check_df_filtered <- check_df %>%
-  mutate(time_diff = abs(as.numeric(In.Bed.Time.Clean - Assessment.Date.Clean))) %>%
-  group_by(mcn) %>%
-  slice_min(order_by = time_diff, with_ties = FALSE) %>%
-  ungroup() %>%
-  select(-time_diff) 
+#check_df_filtered <- check_df %>%
+#  mutate(time_diff = abs(as.numeric(In.Bed.Time.Clean - Assessment.Date.Clean))) %>%
+#  group_by(mcn) %>%
+#  slice_min(order_by = time_diff, with_ties = FALSE) %>%
+#  ungroup() %>%
+#  select(-time_diff) 
 
-length(unique(check_df_filtered$mcn))
-write.csv(check_df_filtered, "df_height.csv", row.names = FALSE)
+#length(unique(check_df_filtered$mcn))
+write.csv(check_df, "df_height.csv", row.names = FALSE)
 #12/27/18 0:14
+
